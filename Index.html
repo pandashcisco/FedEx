@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>FedEx Delivery</title>
+  <link rel="icon" type="image/png" sizes="200x100"
+    href="https://awsprodemailassets.s3.amazonaws.com/0ae1dbc4-e5aa-46c3-8aed-55995aabf5b7/fedex-logo_680971213523954.png">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="BGStyle.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    type="text/css" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+  
+<style>
+  body {
+    margin: 0;
+  }
+
+  .icon-bar {
+    width: 100%;
+    background-color: #660099;
+    overflow: auto;
+  }
+
+  .icon-bar a {
+    float: left;
+    width: 20%;
+    text-align: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 36px;
+  }
+
+  .icon-bar a:hover {
+    background-color: #000;
+  }
+
+  .active {
+    background-color: #ff0000;
+  }
+        .container {
+        display: flex;
+        align-items: center;
+        justify-content: center
+      }
+      img {
+        max-width: 100%
+      }
+      .image {
+        flex-basis: 40%
+      }
+      .text {
+        font-size: 20px;
+        padding-left: 20px;
+      }
+    .input-set {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  label {
+      margin-bottom: 5px;
+    }
+
+    input[type="tel"] {
+      padding: 5px;
+    }
+</style>
+
+<body>
+ 
+  <div class="icon-bar">
+
+    <a style="color:#ff6600;font-family:'Futura Bold'">Fe<b>dE</b>x </a>
+  </div>
+
+    <div>
+    <div class="container">
+      <div class="image">
+        <img src="https://awsprodemailassets.s3.amazonaws.com/0ae1dbc4-e5aa-46c3-8aed-55995aabf5b7/FedEx_Agent_680113900214056.jpeg">
+      </div>
+      <div class="text">
+        <h1>POC Delivery Notification </h1>
+        <p>Click the <b>SUBMIT</b> button below to trigger POC delivery notification </p>
+        <div class="columns  large-12 inputCol">
+          <div class="columns  large-12">
+            <div class="input-set">
+              <span class="tooltip__wrapper">
+                <label stylefor="MSISDN">Contact Number</label>
+              </span>
+              <input type="tel" id="MSISDN" placeholder="[+Country Code] [10-Digit Number]" class="default">
+            </div>
+           <div class="input-set">
+              <label stylefor="Shipment">Shipment ID</label>
+              <input type="tel" id="Shipment" placeholder="123456" class="default">
+            </div>
+            </div>
+          </div>
+
+      <input type="checkbox" id="Optin" name="optin" value="Yes">
+      <label for="optin">I would like to receive WhatsApp notification from FedEx</label><br>
+
+
+
+        <button type="button" id="button_1" style="background-color:#ff6600;color:#FFFFFF;width: 100px; height: 40px; font-family:'Futura Bold';font-size: 16px;">SUBMIT</button>
+        <div id="welcomeDiv"  style="display:none;" class="answer_list" > SUBMITTED SUCCESSFULLY !!</div>
+        </div>  
+      </div>
+  </div>
+  
+  <div class="row">
+    <nav class="navMenu">
+      <div class="navColL">
+        <div class="navColR">
+
+        </div>
+      </div>
+    </nav>
+  </div>
+
+      <div class="row">
+        <h1 style="text-align: center;font-size:30px;font-family:'Futura Bold';color:#660099">Relax, it's Fed<a style="color:#ff6600">Ex</a></h1>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!------------------------------------Result section----------------------------------------------->
+
+
+
+  <script>
+  //Create function which takes a string and creates a json object from it, this is query string param style. 
+  function parseQueryString (queryString) {
+  var  newQueryString= queryString.replace('?','');    
+  var parsedString = '';   
+
+  console.log(queryString);
+  if(queryString.length > 2){
+    parsedString = JSON.parse('{"' + decodeURI(newQueryString).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');}  
+  return parsedString;
+}
+
+    
+    $(document).ready(function () 
+    {
+
+  //call the method passing in the query string.
+  var jsonQuery = parseQueryString(window.location.search);
+
+  //if we have a populated json object, 
+  if( jsonQuery ) {
+    //if we have name as a json path in the json object and it's populated.
+    if(jsonQuery.name){
+      //use jquery to load the value into the name
+      $('#Name').val(jsonQuery.name);
+      console.log("POPULATED NAME" + jsonQuery.name);
+    }
+    if(jsonQuery.MSISDN){
+      //use jquery to load the value into the name
+      $('#MSISDN').val(jsonQuery.MSISDN);
+      console.log("POPULATED Number" + jsonQuery.MSISDN);
+    }
+  }
+
+   
+      $("#button_1").click(function () {
+          var Shipment = $("#Shipment").val();
+          var number = $("#MSISDN").val();
+          var deliverydate = $("#DeliveryDate").val();
+          var choice = $('[name=optin]:checked').val();
+        
+        $.ajax({
+          headers: {"content-type": "application/json"},
+          url: 'https://hooks.eu.webexconnect.io/events/1JFILUFGP1',
+          type: 'POST',
+          data: JSON.stringify({
+            "demo": window.location,
+            "MSISDN": number,
+            "ShipmentID": Shipment,
+            "DeliveryDate": deliverydate,
+            "preference": choice
+          }),
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function (result) {
+
+            //any success action
+            console.log("This is the place we are checking");
+          document.getElementById('welcomeDiv').style.display = "block";
+
+          }
+        });
+      });
+      console.log("This is the place we are checking 2");
+    });</script>
+</body>
+
+</html>
